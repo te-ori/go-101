@@ -9,13 +9,22 @@ import "fmt"
 type Score uint8
 
 /*
-Eğer tipimiz sadece primitif bir tip olsaydı o tipteki değişkenler üzerinde  çağrılabilecek, bu tip bir fonksiyon tanımlayamayacaktık. Bunun yerine
+Eğer tipimiz sadece primitif bir tip olsaydı o tipteki değişkenler üzerinde
+çağrılabilecek, bu tip bir fonksiyon tanımlayamayacaktık. Bunun yerine
 
  func Grade(score uint8) string {
 	 //...
  }
 
-şeklinde de bir fonksiyon kullanabilirdik. Fakat `Score` u tanımlayarak *bağlamı* daha da kuvvetlendirdik. *level of abstraction*'ı yani *genellemenin seviyesini* azaltarak anlaşılabilirliği arttırdık. Böylece kodu okuyan kişi açısından `uint8` gibi çok daha genel bir veri yerine, `Score` gibi `Lesson` bağlamında çok daha açık bir anlama sahip tipimiz oldu. Ayrıca doğrudan `Score` tipi üzerine tanımlayabildiğimiz metodlarımız sayesinde yine amacını daha iyi ifade eden fonksiyonlarımız oldu. Son olarak da intellisense'e sahip IDE'lerde `Score` için tanımlanmış tüm metodları görebiliriz. Diğer primitif tiplerde böyle bir şansımız olmayacak.
+şeklinde de bir fonksiyon kullanabilirdik. Fakat `Score` u tanımlayarak
+*bağlamı* daha da kuvvetlendirdik. *level of abstraction*'ı yani *genellemenin
+seviyesini* azaltarak anlaşılabilirliği arttırdık. Böylece kodu okuyan kişi
+açısından `uint8` gibi çok daha genel bir veri yerine, `Score` gibi `Lesson`
+bağlamında çok daha açık bir anlama sahip tipimiz oldu. Ayrıca doğrudan `Score`
+tipi üzerine tanımlayabildiğimiz metodlarımız sayesinde yine amacını daha iyi
+ifade eden fonksiyonlarımız oldu. Son olarak da intellisense'e sahip IDE'lerde
+`Score` için tanımlanmış tüm metodları görebiliriz. Diğer primitif tiplerde böyle
+bir şansımız olmayacak.
 */
 func (s Score) Grade() string {
 	if s >= 85 {
@@ -33,11 +42,21 @@ func (s Score) Grade() string {
 
 type Lesson struct {
 	Name string
-	/* Burada `scores` field'ını private yaparak enkapsülasyon yaptık. Böylece `Lesson` `struct`'ını kullanacak kişilerin onu yanlış kullanma ihtimalini sınırlamış olduk. Bu uygulama kapsmaında derslerden alınacak puanların 0 - 100 arasında olmasını istiyoruz. Fakat bu değerleri kullanabileceğimiz en küçük tipimiz `uint8`. Bu tip ile 0'dan küçük bir değer almasını engelleyebiliyoruz fakat 100'den büyük bir değer almasını engelleyemiyoruz. Çünkü `uint8` 0-255 arasındaki değerleri alabilir. Yani eğer `scores` public olsaydı, bu package dışında tanımlanmış, örneğin, `Lesson` tipindeki bir `mathematic` değişkeni üzerinde şunu yapabilecektik:
+	/* Burada `scores` field'ını private yaparak enkapsülasyon yaptık. Böylece `Lesson`
+	`struct`'ını kullanacak kişilerin onu yanlış kullanma ihtimalini sınırlamış olduk.
+	Bu uygulama kapsmaında derslerden alınacak puanların 0 - 100 arasında olmasını istiyoruz.
+	Fakat bu değerleri kullanabileceğimiz en küçük tipimiz `uint8`. Bu tip ile 0'dan küçük
+	bir değer almasını engelleyebiliyoruz fakat 100'den büyük bir değer almasını engelleyemiyoruz.
+	Çünkü `uint8` 0-255 arasındaki değerleri alabilir. Yani eğer `scores` public olsaydı,
+	bu package dışında tanımlanmış, örneğin, `Lesson` tipindeki bir `mathematic` değişkeni
+	üzerinde şunu yapabilecektik:
 
 	mathematic.Scores[0] = 150
 
-	Fakat bu alanı private yaparak ve `scores` üzerinde değişiklik yapma fırsatını kullanıcılara yalnızca, aşağıda, `Lesson` üzerinde tanımladığımız `SetScoreOf(nthExam uint8, score Score) (bool, error)` metodu aracılığıyla verdiğimiz için `scrose` içerisinde istediğimiz aralık dışında değerler olmasını engellemiş olduk.
+	Fakat bu alanı private yaparak ve `scores` üzerinde değişiklik yapma fırsatını kullanıcılara
+	yalnızca, aşağıda, `Lesson` üzerinde tanımladığımız `SetScoreOf(nthExam uint8, score Score)
+	(bool, error)` metodu aracılığıyla verdiğimiz için `scrose` içerisinde istediğimiz aralık
+	dışında değerler olmasını engellemiş olduk.
 	*/
 	scores [3]Score
 }
@@ -71,7 +90,10 @@ func (l *Lesson) GetScoreOf(nthExam uint8) (Score, error) {
 }
 
 /*
-Burada `scores` bilgisinin enkapsüllemesini desteklliyoruz. `Score` bilgisi `Lesson` üzerinde private olduğu için zaten bu paket dışından erişilemeyecek. Bu bilgiye ulaşılmak istendiğinde dizinin `slice`'ını ya da  `pointer`'ını dönmek yerine istenden değeri primitif olarak yani kopyasını dönüyoruz.
+Burada `scores` bilgisinin enkapsüllemesini desteklliyoruz. `Score` bilgisi `Lesson`
+üzerinde private olduğu için zaten bu paket dışından erişilemeyecek. Bu bilgiye ulaşılmak
+istendiğinde dizinin `slice`'ını ya da  `pointer`'ını dönmek yerine istenden değeri
+primitif olarak yani kopyasını dönüyoruz.
 */
 func (l *Lesson) Notes() [3]Score {
 	return l.scores
